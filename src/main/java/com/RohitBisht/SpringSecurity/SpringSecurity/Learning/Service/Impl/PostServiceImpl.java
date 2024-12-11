@@ -2,18 +2,24 @@ package com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Service.Impl;
 
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.DTO.PostDTO;
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Entity.PostEntity;
+import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Entity.UserEntity;
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Exception.ResourceNotFoundException;
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Repository.PostRepository;
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Service.PostServices;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@ToString
 public class PostServiceImpl implements PostServices {
 
     private final PostRepository postRepository;
@@ -37,6 +43,11 @@ public class PostServiceImpl implements PostServices {
 
     @Override
     public PostDTO getPostById(Long postId) {
+
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        log.info("user {}", user);
+
         PostEntity postEntity = postRepository
                 .findById(postId)
                 .orElseThrow(()-> new ResourceNotFoundException("Post not found with this  id "+postId));
