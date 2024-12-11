@@ -20,7 +20,7 @@ class SpringSecurityLearningApplicationTests {
 
 		System.out.println(token);
 
-		Long id = jwtService.getUserIdFromToke(token);
+		Long id = jwtService.getUserIdFromToken(token);
 		System.out.println(id);
 
 	}

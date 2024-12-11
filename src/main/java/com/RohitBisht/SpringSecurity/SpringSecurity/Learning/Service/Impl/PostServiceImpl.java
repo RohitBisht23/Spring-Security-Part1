@@ -7,7 +7,6 @@ import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Repository.PostRepo
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Service.PostServices;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

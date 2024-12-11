@@ -1,6 +1,8 @@
 package com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Config;
 
 
+import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Filters.JwtAuthFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,17 +19,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfigs {
+
+    private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/post", "/auth/**").permitAll()
-                        .requestMatchers("/post/**").hasAnyRole("ADMIN")
+                        .requestMatchers("/post/**").authenticated()
                         .anyRequest()
                         .authenticated()
                 )
@@ -35,7 +41,8 @@ public class WebSecurityConfigs {
                 .sessionManagement(sessionConfig -> sessionConfig
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .formLogin(Customizer.withDefaults());
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                //.formLogin(Customizer.withDefaults());
 
         return httpSecurity.build();
     }
@@ -64,10 +71,7 @@ public class WebSecurityConfigs {
 //        return new InMemoryUserDetailsManager(normalUser, normalUser2, adminUser);
 //    }
 
-    @Bean
-    PasswordEncoder PasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
