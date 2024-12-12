@@ -8,6 +8,7 @@ import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Exception.ResourceN
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Repository.UserRepository;
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Service.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,7 +25,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(() -> new ResourceNotFoundException("User not found with this email "+username));
+        return userRepository.findByEmail(username).orElseThrow(() -> new BadCredentialsException("User not found with this email "+username));
     }
 
     public UserEntity getUserById(Long userId) {
