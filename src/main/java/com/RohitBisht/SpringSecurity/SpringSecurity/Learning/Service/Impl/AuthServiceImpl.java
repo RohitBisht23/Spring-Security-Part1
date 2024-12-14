@@ -1,5 +1,6 @@
 package com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Service.Impl;
 
+import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.DTO.LogResponseDTO;
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.DTO.LoginDTO;
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.DTO.SignUpDTO;
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.DTO.UserDTO;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserService userService;
 
     public UserDTO signUp(SignUpDTO signUpDTO) {
 
@@ -47,14 +50,26 @@ public class AuthServiceImpl implements AuthService {
         return modelMapper.map(savedUser, UserDTO.class);
     }
 
-    public String loginUser(LoginDTO loginDTO) {
+    public LogResponseDTO loginUser(LoginDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
         );
 
         UserEntity user = (UserEntity) authentication.getPrincipal();
 
-        String token = jwtService.generateToken(user);
-        return token;
+        String accessToken = jwtService.generateAcessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        return new LogResponseDTO(user.getId(), refreshToken, accessToken);
+    }
+
+    public LogResponseDTO refresherToken(String refreshToken) {
+        Long userId = jwtService.getUserIdFromToken(refreshToken);
+
+        UserEntity user = userService.getUserById(userId);
+
+        String acessToken = jwtService.generateAcessToken(user);
+
+        return new LogResponseDTO(user.getId(), acessToken, refreshToken);
     }
 }

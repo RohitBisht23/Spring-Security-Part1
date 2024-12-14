@@ -2,7 +2,7 @@ package com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Config;
 
 
 import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Filters.JwtAuthFilter;
-import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Filters.LoggingFilter;
+//import com.RohitBisht.SpringSecurity.SpringSecurity.Learning.Filters.LoggingFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfigs {
 
-    private final LoggingFilter loggingFilter;
+//    private final LoggingFilter loggingFilter;
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
@@ -43,7 +43,7 @@ public class WebSecurityConfigs {
                 .sessionManagement(sessionConfig -> sessionConfig
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .addFilterBefore(loggingFilter, UsernamePasswordAuthenticationFilter.class)
+                //.addFilterBefore(loggingFilter, UsernamePasswordAuthenticationFilter.class)//Commenting for some time because adding advanced security features
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
                 //.formLogin(Customizer.withDefaults());
 
